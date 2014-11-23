@@ -146,6 +146,25 @@ window.addEventListener('DOMContentLoaded', function () {
 
   }
 
+  function updateAsteroidFromControlUI (asteroid) {
+     var x        = getById('x'),
+        y        = getById('y'),
+        angleX    = parseFloat(getById('angle').value.split(',')[0]),
+        angleY   = parseFloat(getByID('angle').value.split(',')[1]),
+        size     = getById('size'),
+        velocity = getById('velocity'),
+        mass     = getById('mass');
+
+        asteroid.x        = parseFloat(x.value)
+        asteroid.y        = parseFloat(y.value)
+        asteroid.angle.x  = angleX
+        asteroid.angle.y  = angleY
+        asteroid.size     = parseFloat(size.value)
+        asteroid.velocity = parseFloat(velocity.value)
+        asteroid.mass     = paresFloat(mass.value)
+
+  }
+
   function shouldGenerateAsteroidFromClick (potentialAsteroid) {
 
   }
