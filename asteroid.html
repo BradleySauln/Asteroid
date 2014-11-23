@@ -7,6 +7,12 @@ stop and start buttons, lines showing their path ot trajectory. -->
  <!DOCTYPE html>
  <html>
 <head>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  	<script src='./bundle.js'></script>
+
+  	<!-- CSS styling -->
 	<style>
 		#control {
 			position: absolute;
@@ -36,13 +42,22 @@ stop and start buttons, lines showing their path ot trajectory. -->
 			cursor:pointer
 		}
 	</style>
-	<script src='./bundle.js'></script>
+
+	<!-- JQUERY Scripts -->
+	<script>
+	  $(function() {
+	    $( "#control" ).accordion();
+	  });
+  	</script>
+ 
 </head>
+
 <body>
 	<canvas id='canvas'></canvas>
 	</div>
 
-	<div id="control">
+	<div class="Asteroid Control" id="control">
+		<h3>Asteroid</h3>
 		<h6>X Position</h6>
 		<input type = "text" name = "x">
 		<h6>Y Position</h6>
