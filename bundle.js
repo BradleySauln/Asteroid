@@ -1,93 +1,137 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-	// Start Object Extend. Can have a base object and then overwrite
-	if (!Object.prototype.extend) {
+var Vector = require('./vector.js');
 
- 		Object.prototype.extend = function (object) {
+module.exports = (function () {
 
-		   for (var key in object) {
+  var asteroidPrototype = {
 
-		     if (typeof object[key] === 'object' &&
-		         typeof this[key] === 'object'   &&
-		         this.hasOwnProperty(key)) {
+    'isAsteroid': true,
 
-		       this[key].extend(object[key]);
+    'x': 0,
+    'y': 0,
 
-		     } else {
-		       this[key] = object[key];
-		     }
-		   }
-		   return this;
-		 };
-	}
-	// End
-			// Start Vector Library - Can reuse this for other stuff :)
- 	var Vector = require('./vector');
+    'width': 10,
+    'height': 10,
 
-	window.addEventListener('DOMContentLoaded', function () {
-		console.log('DOM Loaded');
+    'mass': 10,
 
-		var canvas = document.getElementById('canvas'),
-			ctx = canvas.getContext('2d'),
-			looping = false,
-			models = {
-				'asteroidOne': {
-					'x': 100,
-					'y': 100,
-					'mass': 10,
-					'size': 50,
-					'angle': {
-						'x': 90,
-						'y': 90
-					},
+    'size': 50,
 
-					'velocity': 100,
-					'color': '#fff'
-				},
+    'angle': {
+      'x': 90,
+      'y': 90
+    },
 
-				'asteroidTwo': {
-					'x': 400,
-					'y': 400,
-					'mass': 10,
-					'size': 50,
-					'angle': {
-						'x': -90,
-						'y': -90
-					},
-					'velocity': 100,
-					'color': '#33b'
-				}
-			};
+    'velocity': 100,
 
-		models.asteroidOne.extend(Vector(models.asteroidOne.x, models.asteroidOne.y));
-		models.asteroidTwo.extend(Vector(models.asteroidTwo.x, models.asteroidTwo.y));
-		models.asteroidOne.angle.extend(Vector(models.asteroidOne.angle.x, models.asteroidOne.angle.y));
-		models.asteroidTwo.angle.extend(Vector(models.asteroidTwo.angle.x, models.asteroidTwo.angle.y));
+    'color': 'yellow',
 
+    'border': 'blue',
 
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
+    'render': function (ctx) {
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+    }
 
-		canvas.addEventListener('click', function (event) {
+  };
 
-			var x = event.clientX,
-				y = event.clientY;
+  function init(newAsteroid) {
 
-			ctx.fillStyle = '#fec';
-			ctx.fillRect(x, y, 100, 100);
+    // Position with Vector
+    newAsteroid.extend(Vector(newAsteroid.x, newAsteroid.y));
 
-		});
+    // Rotation with Vector
+    newAsteroid.angle.extend(Vector(newAsteroid.angle.x, newAsteroid.angle.y));
 
-		function drawBackground () {
+    return newAsteroid;
 
-		ctx.fillStyle = '#000';
-		ctx.fillRect(0,0, canvas.width, canvas.height);
-		}
+  }
+
+  return function (config) {
+
+    config = config || {};
+
+    return init(Object.create(asteroidPrototype).extend(config));
+
+  };
+
+}());
+},{"./vector.js":3}],2:[function(require,module,exports){
+'use strict';
+
+// Start Object Extend. Can have a base object and then overwrite
+if (!Object.prototype.extend) {
+
+	Object.prototype.extend = function (object) {
+
+    for (var key in object) {
+
+      if (typeof object[key] === 'object' &&
+          typeof this[key] === 'object'   &&
+          this.hasOwnProperty(key)) {
+
+        this[key].extend(object[key]);
+
+      } else {
+        this[key] = object[key];
+      }
+    }
+    return this;
+  };
+}
+
+// End
+// Start Vector Library - Can reuse this for other stuff :)
+
+	var Vector            = require('./vector'),
+		  AsteroidFactory   = require('./asteroid');
+
+window.addEventListener('DOMContentLoaded', function () {
+
+	var canvas  = document.getElementById('canvas'),
+		  ctx     = canvas.getContext('2d'),
+		  looping = false,
+		  models  = [];
+
+  window.models = models;
+
+  function generateAsteroid (config) {
+
+    models.push(AsteroidFactory(config));
+
+    return models[models.length - 1];
+
+  }
+
+  generateAsteroid();
+
+  // Set up our canvas
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	canvas.addEventListener('click', function (event) {
+
+		var x = event.clientX,
+			  y = event.clientY;
+
+		ctx.fillStyle = '#fec';
+		ctx.fillRect(x, y, 100, 100);
+
+	});
+
+	function drawBackground () {
+
+	  ctx.fillStyle = '#000';
+	  ctx.fillRect(0,0, canvas.width, canvas.height);
+
+  }
 
 
 	function loop () {
-		getInputs();
+
+    getInputs();
 
 		updateModels();
 
@@ -96,7 +140,8 @@
 		if (looping) {
 			setTimeout(loop, 1);
 		}
-	}
+
+  }
 
 	function isColliding (asteroidOne, asteroidTwo) {
 		// create variables to define boundaries of asteroids
@@ -125,13 +170,15 @@
 	function start () {
 
 		if (!looping) {
+      console.log('Starting simulation');
 			looping = true;
 			loop();
 		}
+
 	}
 
 	function stop () {
-
+    console.log('Stopping simulation');
 		looping = false;
 	}
 
@@ -140,54 +187,64 @@
 
 	}
 
-	function updateModels () {
-		var currentAsteroid;
-		if(isColliding(models.asteroidOne, models.asteroidTwo)) {
-			models.asteroidOne.angle.mult(-1);
-			models.asteroidTwo.angle.mult(-1);
-			console.log('collision detected!!')
-		}
+  function updateModels () {
 
-		for (var model in models) {
+    var currentAsteroid;
 
-			if (models.hasOwnProperty(model)) {
+    for(var i=0; i<models.length; i++){
+      for(var j=i+1;j<models.length;j++){
+        if(isColliding(models[i], models[j]) && model[i].isAsteroid && model[j].isAsteroid) {
+          models[i].angle.mult(-1);
+          models[j].angle.mult(-1);
+          console.log('collision detected!!')
+        }
+      }
 
-				currentAsteroid = models[model];
+    }
 
-				currentAsteroid.add(currentAsteroid.angle.normalize().mult(currentAsteroid.velocity/ 1000));
-			}
-		}
+    for (var model in models) {
 
+      if (models.hasOwnProperty(model)) {
 
-	}
+        currentAsteroid = models[model];
+
+        currentAsteroid.add(currentAsteroid.angle.normalize().mult(currentAsteroid.velocity/ 1000));
+      }
+    }
+
+  }
 
 	function render () {
 
-		var currentAsteroid;
+		var currentModel;
 
 		drawBackground();
 
 		for (var model in models) {
+
 			if (models.hasOwnProperty(model)) {
-				currentAsteroid = models[model];
 
-				ctx.fillStyle = currentAsteroid.color;
+				currentModel = models[model];
 
-				ctx.fillRect(currentAsteroid.x,
-							 currentAsteroid.y,
-							 currentAsteroid.size,
-							 currentAsteroid.size)
+				ctx.save();
+
+        ctx.translate(currentModel.x, currentModel.y);
+
+        currentModel.render(ctx);
+
+				ctx.restore();
+
 			}
 		}
 	}
 
 
 
-	// start();
+start();
 
-	});
+});
 
-},{"./vector":2}],2:[function(require,module,exports){
+},{"./asteroid":1,"./vector":3}],3:[function(require,module,exports){
 var Vector = (function () { // Start create function and call it all at once
 	var vectorProto = {
 
@@ -270,4 +327,4 @@ var Vector = (function () { // Start create function and call it all at once
 window.Vector = Vector;
 
 module.exports = Vector;
-},{}]},{},[1]);
+},{}]},{},[2]);

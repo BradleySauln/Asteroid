@@ -36,21 +36,23 @@ module.exports = (function () {
 
   };
 
-  function init(newBox) {
+  function init(newAsteroid) {
 
     // Position with Vector
-    newBox.extend(Vector(newBox.x, newBox.y));
+    newAsteroid.extend(Vector(newAsteroid.x, newAsteroid.y));
 
     // Rotation with Vector
-    newBox.angle.extend(Vector(newBox.angle.x, newBox.angle.y));
+    newAsteroid.angle.extend(Vector(newAsteroid.angle.x, newAsteroid.angle.y));
 
-    return newBox;
+    return newAsteroid;
 
   }
 
-  return newBox) {
+  return function (config) {
 
-    return init(Object.create(boxPrototype).extend(config));
+    config = config || {};
+
+    return init(Object.create(asteroidPrototype).extend(config));
 
   };
 

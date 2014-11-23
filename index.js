@@ -34,6 +34,8 @@ window.addEventListener('DOMContentLoaded', function () {
 		  looping = false,
 		  models  = [];
 
+  window.models = models;
+
   function generateAsteroid (config) {
 
     models.push(AsteroidFactory(config));
@@ -41,6 +43,8 @@ window.addEventListener('DOMContentLoaded', function () {
     return models[models.length - 1];
 
   }
+
+  generateAsteroid();
 
   // Set up our canvas
 	canvas.width = window.innerWidth;
@@ -122,26 +126,32 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	}
 
-	function updateModels () {
-		var currentAsteroid;
-		if(isColliding(models.asteroidOne, models.asteroidTwo)) {
-			models.asteroidOne.angle.mult(-1);
-			models.asteroidTwo.angle.mult(-1);
-			console.log('collision detected!!')
-		}
+  function updateModels () {
 
-		for (var model in models) {
+    var currentAsteroid;
 
-			if (models.hasOwnProperty(model)) {
+    for(var i=0; i<models.length; i++){
+      for(var j=i+1;j<models.length;j++){
+        if(isColliding(models[i], models[j]) && model[i].isAsteroid && model[j].isAsteroid) {
+          models[i].angle.mult(-1);
+          models[j].angle.mult(-1);
+          console.log('collision detected!!')
+        }
+      }
 
-				currentAsteroid = models[model];
+    }
 
-				currentAsteroid.add(currentAsteroid.angle.normalize().mult(currentAsteroid.velocity/ 1000));
-			}
-		}
+    for (var model in models) {
 
+      if (models.hasOwnProperty(model)) {
 
-	}
+        currentAsteroid = models[model];
+
+        currentAsteroid.add(currentAsteroid.angle.normalize().mult(currentAsteroid.velocity/ 1000));
+      }
+    }
+
+  }
 
 	function render () {
 
@@ -169,6 +179,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 
-// start();
+start();
 
 });
