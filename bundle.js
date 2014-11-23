@@ -12,9 +12,6 @@ module.exports = (function () {
     'x': 0,
     'y': 0,
 
-    'width': 10,
-    'height': 10,
-
     'mass': 10,
 
     'size': 50,
@@ -32,7 +29,7 @@ module.exports = (function () {
 
     'render': function (ctx) {
       ctx.fillStyle = this.color;
-      ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+      ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
     }
 
   };
@@ -64,7 +61,7 @@ module.exports = (function () {
 // Start Object Extend. Can have a base object and then overwrite
 if (!Object.prototype.extend) {
 
-	Object.prototype.extend = function (object) {
+  Object.prototype.extend = function (object) {
 
     for (var key in object) {
 
@@ -82,19 +79,25 @@ if (!Object.prototype.extend) {
   };
 }
 
+// Get a random integer between some range.
+if (!Math.getRandomInt) {
+  Math.getRandomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+}
 // End
 // Start Vector Library - Can reuse this for other stuff :)
 
-	var Vector            = require('./vector'),
-		  AsteroidFactory   = require('./asteroid');
+  var Vector            = require('./vector'),
+      AsteroidFactory   = require('./asteroid');
 
 window.addEventListener('DOMContentLoaded', function () {
 
-	var canvas  = document.getElementById('canvas'),
-		  ctx     = canvas.getContext('2d'),
-		  looping = false,
+  var canvas  = document.getElementById('canvas'),
+      ctx     = canvas.getContext('2d'),
+      looping = false,
       inputs  = [],
-		  models  = [];
+      models  = [];
 
   window.models = models;
 
@@ -110,8 +113,7 @@ window.addEventListener('DOMContentLoaded', function () {
     'x': 400,
     'y': 400,
     'mass': 10,
-    'width':50,
-    'height':50,
+    'size': 50,
     'angle': {
       'x': -90,
       'y': -90
@@ -124,8 +126,7 @@ window.addEventListener('DOMContentLoaded', function () {
     'x': 100,
     'y': 100,
     'mass': 10,
-    'width':50,
-    'height':50,
+    'size': 50,
     'angle': {
       'x': 90,
       'y': 90
@@ -137,96 +138,99 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
   // Set up our canvas
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-	canvas.addEventListener('click', function (event) {
+  canvas.addEventListener('click', function (event) {
 
     inputs.push(function () {
 
       var x = event.clientX,
-  			  y = event.clientY;
+          y = event.clientY,
+          size = Math.getRandomInt(10, 75),
+          angleX = Math.getRandomInt(-90, 90),
+          angleY = Math.getRandomInt(-90, 90);
 
       console.log('Generating by clicking');
 
-  		generateAsteroid({
+      generateAsteroid({
         'x': x,
         'y': y,
         'angle': {
-          'x': 10,
-          'y': -10
+          'x': angleX,
+          'y': angleY
         },
         'mass': 10,
-        'width':50,
-        'height':50
+        'size': size,
+        'color': '#'+Math.floor(Math.random()*16777215).toString(16)
       });
 
     });
 
-	});
+  });
 
-	function drawBackground () {
+  function drawBackground () {
 
-	  ctx.fillStyle = '#000';
-	  ctx.fillRect(0,0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0, canvas.width, canvas.height);
 
   }
 
 
-	function loop () {
+  function loop () {
 
     getInputs();
 
-		updateModels();
+    updateModels();
 
-		render();
+    render();
 
-		if (looping) {
-			setTimeout(loop, 1);
-		}
+    if (looping) {
+      setTimeout(loop, 1);
+    }
 
   }
 
-	function isColliding (asteroidOne, asteroidTwo) {
-		// create variables to define boundaries of asteroids
-		var oneLeft = asteroidOne.x,
-		oneRight = oneLeft + asteroidOne.size,
-		oneTop = asteroidOne.y,
-		oneBottom = oneTop + asteroidOne.size,
-		twoLeft = asteroidTwo.x,
-		twoRight = twoLeft + asteroidTwo.size,
-		twoTop = asteroidTwo.y,
-		twoBottom = twoTop + asteroidTwo.size;
-		// detect if any boundary from both asteroids overlap/intersect
-		if (((oneLeft >= twoLeft &&
-			oneLeft <= twoRight) ||
-			(oneRight >= twoLeft &&
-			oneRight <= twoRight)) &&
-			((oneTop >= twoTop &&
-			oneTop <= twoBottom) ||
-			(oneBottom >= twoTop &&
-			oneBottom <= twoBottom))
-			) {
-			return true;
-		};
-	}
+  function isColliding (asteroidOne, asteroidTwo) {
+    // create variables to define boundaries of asteroids
+    var oneLeft = asteroidOne.x,
+    oneRight = oneLeft + asteroidOne.size,
+    oneTop = asteroidOne.y,
+    oneBottom = oneTop + asteroidOne.size,
+    twoLeft = asteroidTwo.x,
+    twoRight = twoLeft + asteroidTwo.size,
+    twoTop = asteroidTwo.y,
+    twoBottom = twoTop + asteroidTwo.size;
+    // detect if any boundary from both asteroids overlap/intersect
+    if (((oneLeft >= twoLeft &&
+      oneLeft <= twoRight) ||
+      (oneRight >= twoLeft &&
+      oneRight <= twoRight)) &&
+      ((oneTop >= twoTop &&
+      oneTop <= twoBottom) ||
+      (oneBottom >= twoTop &&
+      oneBottom <= twoBottom))
+      ) {
+      return true;
+    };
+  }
 
-	function start () {
+  function start () {
 
-		if (!looping) {
+    if (!looping) {
       console.log('Starting simulation');
-			looping = true;
-			loop();
-		}
+      looping = true;
+      loop();
+    }
 
-	}
+  }
 
-	function stop () {
+  function stop () {
     console.log('Stopping simulation');
-		looping = false;
-	}
+    looping = false;
+  }
 
-	function getInputs () {
+  function getInputs () {
 
     for (var i = 0; i < inputs.length; i++) {
       inputs[i]();
@@ -234,7 +238,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     inputs = [];
 
-	}
+  }
 
   function updateModels () {
 
@@ -269,33 +273,37 @@ window.addEventListener('DOMContentLoaded', function () {
 
   }
 
-	function render () {
+  function render () {
 
-		var currentModel;
+    var currentModel;
 
-		drawBackground();
+    drawBackground();
 
-		for (var model in models) {
+    for (var model in models) {
 
-			if (models.hasOwnProperty(model)) {
+      if (models.hasOwnProperty(model)) {
 
-				currentModel = models[model];
+        currentModel = models[model];
 
-				ctx.save();
+        ctx.save();
 
         ctx.translate(currentModel.x, currentModel.y);
 
         currentModel.render(ctx);
 
-				ctx.restore();
+        ctx.restore();
 
-			}
-		}
-	}
+      }
+    }
+  }
 
 
 
 start();
+
+$(function() {
+  // $( "#control" ).accordion();
+});
 
 });
 

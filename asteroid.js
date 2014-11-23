@@ -11,9 +11,6 @@ module.exports = (function () {
     'x': 0,
     'y': 0,
 
-    'width': 10,
-    'height': 10,
-
     'mass': 10,
 
     'size': 50,
@@ -31,7 +28,7 @@ module.exports = (function () {
 
     'render': function (ctx) {
       ctx.fillStyle = this.color;
-      ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+      ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
     }
 
   };
