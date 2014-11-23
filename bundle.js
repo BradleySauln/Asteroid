@@ -1,33 +1,5 @@
-<!-- add controls to the page for asteroids: position, slider for angle (show angle on asteroid?) slide in/out control panel
-stop and start buttons, lines showing their path ot trajectory. -->
-
-
-
-
- <!DOCTYPE html>
- <html>
-<head>
-	<style>
-		#control {
-			position: absolute;
-			right: 0px;
-			background-color: #fff;
-			top:0px;
-
-		}
-		input {
-			display:block;
-		}
-		* {
-			padding:0;
-			margin:0;
-		}
-		body, html {
-			overflow:hidden;
-		}
-	</style>
-	<script>
-	'use strict';
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
 	// Start Object Extend. Can have a base object and then overwrite
 	if (!Object.prototype.extend) {
@@ -51,86 +23,7 @@ stop and start buttons, lines showing their path ot trajectory. -->
 	}
 	// End
 			// Start Vector Library - Can reuse this for other stuff :)
- 		var Vector = (function () { // Start create function and call it all at once
-			var vectorProto = {
-
-		    'add' : function (v) {
-		      this.x += v.x;
-		      this.y += v.y;
-		      return this;
-		    },
-
-		    'sub' : function (v) {
-		      this.x -= v.x;
-		      this.y -= v.y;
-		      return this;
-		    },
-
-		    'mult' : function (m) {
-		      this.x *= m;
-		      this.y *= m;
-		      return this;
-		    },
-
-		    'div' : function (m) {
-		      this.x /= m;
-		      this.y /= m;
-		      return this;
-		    },
-
-		    'dot' : function (v) {
-		      return v.x * this.x + v.y * this.y;
-		    },
-
-		    'lengthSquared' : function () {
-		      return this.dot(this);
-		    },
-
-		    'length' : (function () {
-		      var sqrt = Math.sqrt;
-		      return function () {
-		        return sqrt(this.lengthSquared());
-		      };
-		    }()),
-
-		    'normalize' : function () {
-		      var len = this.length();
-		      if (len) {
-		        return this.div(len);
-		      }
-		      return this;
-		    },
-
-		    'rotate' : function (angle) {
-
-		      var x      = this.x,
-		          y      = this.y,
-		          cosVal = Math.cos(angle),
-		          sinVal = Math.sin(angle);
-
-		      this.x = x * cosVal - y * sinVal;
-		      this.y = x * sinVal + y * cosVal;
-
-		      return this;
-
-		    },
-
-		    'toRadians': function () {
-		      return Math.atan2(this.y, this.x);
-		    }
-
-		  };
-
-		  return function (x, y) {
-		    return Object.create(vectorProto).extend({
-		      'x' : x || 0,
-		      'y' : y || 0
-		    });
-		  };
-		}()); // End create function and call all at once
-		  // End Vector Library
-
-	window.Vector = Vector;
+ 	var Vector = require('./vector');
 
 	window.addEventListener('DOMContentLoaded', function () {
 		console.log('DOM Loaded');
@@ -193,8 +86,6 @@ stop and start buttons, lines showing their path ot trajectory. -->
 		}
 
 
-
-
 	function loop () {
 		getInputs();
 
@@ -231,7 +122,6 @@ stop and start buttons, lines showing their path ot trajectory. -->
 		};
 	}
 
-
 	function start () {
 
 		if (!looping) {
@@ -251,19 +141,13 @@ stop and start buttons, lines showing their path ot trajectory. -->
 	}
 
 	function updateModels () {
-
 		var currentAsteroid;
-
-		for(i=0; i<models.length; i++){
-			for(j=i+1;j<models.length;j++){
-				if(isColliding(models[i], models[j]) && model[i].isAsteroid && model[j].isAsteroid) {
-					models[i].angle.mult(-1);
-					models[j].angle.mult(-1);
-					console.log('collision detected!!')
-				}
-			}
-
+		if(isColliding(models.asteroidOne, models.asteroidTwo)) {
+			models.asteroidOne.angle.mult(-1);
+			models.asteroidTwo.angle.mult(-1);
+			console.log('collision detected!!')
 		}
+
 		for (var model in models) {
 
 			if (models.hasOwnProperty(model)) {
@@ -303,27 +187,87 @@ stop and start buttons, lines showing their path ot trajectory. -->
 
 	});
 
-	</script>
-</head>
-<body>
-	<canvas id='canvas'></canvas>
-	</div>
+},{"./vector":2}],2:[function(require,module,exports){
+var Vector = (function () { // Start create function and call it all at once
+	var vectorProto = {
 
-	<div id="control">
-		<h3>X Position</h3>
-		<input type = "text" name = "x">
-		<h3>Y Position</h3>
-		<input type = "text" name = "y">
-		<h3>Angle</h3>
-		<input type = "text" name = "angle">
-		<h3>Size</h3>
-		<input type = "text" name = "size">
-		<h3>Velocity</h3>
-		<input type = "text" name = "velocity">
-		<h3>Mass</h3>
-		<input type = "text" name = "mass">
-	</div>
+    'add' : function (v) {
+      this.x += v.x;
+      this.y += v.y;
+      return this;
+    },
 
-</body>
+    'sub' : function (v) {
+      this.x -= v.x;
+      this.y -= v.y;
+      return this;
+    },
 
- </html>
+    'mult' : function (m) {
+      this.x *= m;
+      this.y *= m;
+      return this;
+    },
+
+    'div' : function (m) {
+      this.x /= m;
+      this.y /= m;
+      return this;
+    },
+
+    'dot' : function (v) {
+      return v.x * this.x + v.y * this.y;
+    },
+
+    'lengthSquared' : function () {
+      return this.dot(this);
+    },
+
+    'length' : (function () {
+      var sqrt = Math.sqrt;
+      return function () {
+        return sqrt(this.lengthSquared());
+      };
+    }()),
+
+    'normalize' : function () {
+      var len = this.length();
+      if (len) {
+        return this.div(len);
+      }
+      return this;
+    },
+
+    'rotate' : function (angle) {
+
+      var x      = this.x,
+          y      = this.y,
+          cosVal = Math.cos(angle),
+          sinVal = Math.sin(angle);
+
+      this.x = x * cosVal - y * sinVal;
+      this.y = x * sinVal + y * cosVal;
+
+      return this;
+
+    },
+
+    'toRadians': function () {
+      return Math.atan2(this.y, this.x);
+    }
+
+  };
+
+  return function (x, y) {
+    return Object.create(vectorProto).extend({
+      'x' : x || 0,
+      'y' : y || 0
+    });
+  };
+}()); // End create function and call all at once
+  // End Vector Library
+
+window.Vector = Vector;
+
+module.exports = Vector;
+},{}]},{},[1]);

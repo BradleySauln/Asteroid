@@ -1,0 +1,174 @@
+'use strict';
+
+// Start Object Extend. Can have a base object and then overwrite
+if (!Object.prototype.extend) {
+
+	Object.prototype.extend = function (object) {
+
+    for (var key in object) {
+
+      if (typeof object[key] === 'object' &&
+          typeof this[key] === 'object'   &&
+          this.hasOwnProperty(key)) {
+
+        this[key].extend(object[key]);
+
+      } else {
+        this[key] = object[key];
+      }
+    }
+    return this;
+  };
+}
+
+// End
+// Start Vector Library - Can reuse this for other stuff :)
+
+	var Vector            = require('./vector'),
+		  AsteroidFactory   = require('./asteroid');
+
+window.addEventListener('DOMContentLoaded', function () {
+
+	var canvas  = document.getElementById('canvas'),
+		  ctx     = canvas.getContext('2d'),
+		  looping = false,
+		  models  = [];
+
+  function generateAsteroid (config) {
+
+    models.push(AsteroidFactory(config));
+
+    return models[models.length - 1];
+
+  }
+
+  // Set up our canvas
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	canvas.addEventListener('click', function (event) {
+
+		var x = event.clientX,
+			  y = event.clientY;
+
+		ctx.fillStyle = '#fec';
+		ctx.fillRect(x, y, 100, 100);
+
+	});
+
+	function drawBackground () {
+
+	  ctx.fillStyle = '#000';
+	  ctx.fillRect(0,0, canvas.width, canvas.height);
+
+  }
+
+
+	function loop () {
+
+    getInputs();
+
+		updateModels();
+
+		render();
+
+		if (looping) {
+			setTimeout(loop, 1);
+		}
+
+  }
+
+	function isColliding (asteroidOne, asteroidTwo) {
+		// create variables to define boundaries of asteroids
+		var oneLeft = asteroidOne.x,
+		oneRight = oneLeft + asteroidOne.size,
+		oneTop = asteroidOne.y,
+		oneBottom = oneTop + asteroidOne.size,
+		twoLeft = asteroidTwo.x,
+		twoRight = twoLeft + asteroidTwo.size,
+		twoTop = asteroidTwo.y,
+		twoBottom = twoTop + asteroidTwo.size;
+		// detect if any boundary from both asteroids overlap/intersect
+		if (((oneLeft >= twoLeft &&
+			oneLeft <= twoRight) ||
+			(oneRight >= twoLeft &&
+			oneRight <= twoRight)) &&
+			((oneTop >= twoTop &&
+			oneTop <= twoBottom) ||
+			(oneBottom >= twoTop &&
+			oneBottom <= twoBottom))
+			) {
+			return true;
+		};
+	}
+
+	function start () {
+
+		if (!looping) {
+      console.log('Starting simulation');
+			looping = true;
+			loop();
+		}
+
+	}
+
+	function stop () {
+    console.log('Stopping simulation');
+		looping = false;
+	}
+
+	function getInputs () {
+
+
+	}
+
+	function updateModels () {
+		var currentAsteroid;
+		if(isColliding(models.asteroidOne, models.asteroidTwo)) {
+			models.asteroidOne.angle.mult(-1);
+			models.asteroidTwo.angle.mult(-1);
+			console.log('collision detected!!')
+		}
+
+		for (var model in models) {
+
+			if (models.hasOwnProperty(model)) {
+
+				currentAsteroid = models[model];
+
+				currentAsteroid.add(currentAsteroid.angle.normalize().mult(currentAsteroid.velocity/ 1000));
+			}
+		}
+
+
+	}
+
+	function render () {
+
+		var currentModel;
+
+		drawBackground();
+
+		for (var model in models) {
+
+			if (models.hasOwnProperty(model)) {
+
+				currentModel = models[model];
+
+				ctx.save();
+
+        ctx.translate(currentModel.x, currentModel.y);
+
+        currentModel.render(ctx);
+
+				ctx.restore();
+
+			}
+		}
+	}
+
+
+
+// start();
+
+});
