@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateControlUI (asteroid) {
-    
+
     getById('control').asteroid = asteroid;
 
     var x        = getById('x'),
@@ -330,7 +330,17 @@ window.addEventListener('DOMContentLoaded', function () {
   var updateAsteroidButton = getById('apply-change');
 
   updateAsteroidButton.addEventListener('click', function () {
-    updateAsteroidFromControlUI(getbyId('control').asteroid)
+    updateAsteroidFromControlUI(getById('control').asteroid)
+  });
+
+  var startStopButton = getById('simulation-control');
+
+  startStopButton.addEventListener('click', function () {
+    if (looping) {
+      stop();
+    } else {
+      start();
+    }
   });
 
 });
