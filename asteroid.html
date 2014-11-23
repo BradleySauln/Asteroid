@@ -11,10 +11,19 @@ stop and start buttons, lines showing their path ot trajectory. -->
 		#control {
 			position: absolute;
 			right: 0px;
-			width: 200px;
-			height: 100%;
 			background-color: #fff;
-			
+			top:0px;
+
+		}
+		input {
+			display:block;
+		}
+		* {
+			padding:0;
+			margin:0;
+		}
+		body, html {
+			overflow:hidden;
 		}
 	</style>
 	<script>
@@ -139,7 +148,7 @@ stop and start buttons, lines showing their path ot trajectory. -->
 						'x': 90,
 						'y': 90
 					},
-					
+
 					'velocity': 100,
 					'color': '#fff'
 				},
@@ -167,6 +176,16 @@ stop and start buttons, lines showing their path ot trajectory. -->
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 
+		canvas.addEventListener('click', function (event) {
+
+			var x = event.clientX,
+				y = event.clientY;
+
+			ctx.fillStyle = '#fec';
+			ctx.fillRect(x, y, 100, 100);
+
+		});
+
 		function drawBackground () {
 
 		ctx.fillStyle = '#000';
@@ -188,7 +207,7 @@ stop and start buttons, lines showing their path ot trajectory. -->
 
 	function isColliding (asteroidOne, asteroidTwo) {
 		// create variables to define boundaries of asteroids
-		var oneLeft = asteroidOne.x, 
+		var oneLeft = asteroidOne.x,
 		oneRight = oneLeft + asteroidOne.size,
 		oneTop = asteroidOne.y,
 		oneBottom = oneTop + asteroidOne.size,
@@ -269,7 +288,9 @@ stop and start buttons, lines showing their path ot trajectory. -->
 		}
 	}
 
-	start();
+
+
+	// start();
 
 	});
 
@@ -277,9 +298,8 @@ stop and start buttons, lines showing their path ot trajectory. -->
 </head>
 <body>
 	<canvas id='canvas'></canvas>
-	<div id="generateAsteroid">
 	</div>
-		
+
 	<div id="control">
 		<h3>X Position</h3>
 		<input type = "text" name = "x">
