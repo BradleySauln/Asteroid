@@ -32,6 +32,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	var canvas  = document.getElementById('canvas'),
 		  ctx     = canvas.getContext('2d'),
 		  looping = false,
+      inputs  = [],
 		  models  = [];
 
   window.models = models;
@@ -80,11 +81,26 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	canvas.addEventListener('click', function (event) {
 
-		var x = event.clientX,
-			  y = event.clientY;
+    inputs.push(function () {
 
-		ctx.fillStyle = '#fec';
-		ctx.fillRect(x, y, 100, 100);
+      var x = event.clientX,
+  			  y = event.clientY;
+
+      console.log('Generating by clicking');
+
+  		generateAsteroid({
+        'x': x,
+        'y': y,
+        'angle': {
+          'x': 10,
+          'y': -10
+        },
+        'mass': 10,
+        'width':50,
+        'height':50
+      });
+
+    });
 
 	});
 
@@ -151,6 +167,11 @@ window.addEventListener('DOMContentLoaded', function () {
 
 	function getInputs () {
 
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i]();
+    }
+
+    inputs = [];
 
 	}
 
@@ -159,12 +180,18 @@ window.addEventListener('DOMContentLoaded', function () {
     var currentAsteroid;
 
     for(var i=0; i<models.length; i++){
+
       for(var j=i+1;j<models.length;j++){
+
         if(isColliding(models[i], models[j]) && models[i].isAsteroid && models[j].isAsteroid) {
+
           models[i].angle.mult(-1);
           models[j].angle.mult(-1);
+
           console.log('collision detected!!')
+
         }
+
       }
 
     }
