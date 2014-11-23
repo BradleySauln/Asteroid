@@ -56,21 +56,24 @@ stop and start buttons, lines showing their path ot trajectory. -->
 	<canvas id='canvas'></canvas>
 	</div>
 
-	<div class="Asteroid Control" id="control">
-		<h3>Asteroid</h3>
-		<h6>X Position</h6>
-		<input type = "text" name = "x">
-		<h6>Y Position</h6>
-		<input type = "text" name = "y">
-		<h6>Angle</h6>
-		<input type = "text" name = "angle">
-		<h6>Size</h6>
-		<input type = "text" name = "size">
-		<h6>Velocity</h6>
-		<input type = "text" name = "velocity">
-		<h6>Mass</h6>
-		<input type = "text" name = "mass">
-		<button id="apply-changes" onclick="applyChange()">Apply Changes</button>
+	<!-- Container to hold controls for each asteroid -->
+	<div  class="Asteroid Control" >
+		<div id="control">
+			<h3>Asteroid</h3>
+			<h6>X Position</h6>
+			<input type = "text" name = "x">
+			<h6>Y Position</h6>
+			<input type = "text" name = "y">
+			<h6>Angle</h6>
+			<input type = "text" name = "angle">
+			<h6>Size</h6>
+			<input type = "text" name = "size">
+			<h6>Velocity</h6>
+			<input type = "text" name = "velocity">
+			<h6>Mass</h6>
+			<input type = "text" name = "mass">
+			<button id="apply-changes" onclick="applyChange()">Apply Changes</button>
+		</div>
 	</div>
 
 </body>
