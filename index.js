@@ -327,4 +327,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
   start();
 
+  var updateAsteroidButton = getById('apply-change');
+
+  updateAsteroidButton.addEventListener('click', function () {
+    updateAsteroidFromControlUI(getbyId('control').asteroid)
+  });
+
 });
