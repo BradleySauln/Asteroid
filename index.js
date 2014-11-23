@@ -90,6 +90,7 @@ window.addEventListener('DOMContentLoaded', function () {
     if (clickedAsteroid) {
       console.log('Edit asteroid');
       updateControlUI(clickedAsteroid);
+
       return;
     }
 
@@ -129,6 +130,8 @@ window.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateControlUI (asteroid) {
+    
+    getById('control').asteroid = asteroid;
 
     var x        = getById('x'),
         y        = getById('y'),
@@ -150,7 +153,7 @@ window.addEventListener('DOMContentLoaded', function () {
      var x        = getById('x'),
         y        = getById('y'),
         angleX    = parseFloat(getById('angle').value.split(',')[0]),
-        angleY   = parseFloat(getByID('angle').value.split(',')[1]),
+        angleY   = parseFloat(getById('angle').value.split(',')[1]),
         size     = getById('size'),
         velocity = getById('velocity'),
         mass     = getById('mass');
@@ -161,7 +164,7 @@ window.addEventListener('DOMContentLoaded', function () {
         asteroid.angle.y  = angleY
         asteroid.size     = parseFloat(size.value)
         asteroid.velocity = parseFloat(velocity.value)
-        asteroid.mass     = paresFloat(mass.value)
+        asteroid.mass     = parseFloat(mass.value)
 
   }
 
