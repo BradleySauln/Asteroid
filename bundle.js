@@ -143,31 +143,88 @@ window.addEventListener('DOMContentLoaded', function () {
 
   canvas.addEventListener('click', function (event) {
 
+    var clickedAsteroid = getAsteroidFromClick(event);
+
+    if (clickedAsteroid) {
+      console.log('Edit asteroid');
+      updateControlUI(clickedAsteroid);
+      return;
+    }
+
     inputs.push(function () {
 
       var x      = event.clientX,
           y      = event.clientY,
           size   = Math.getRandomInt(10, 75),
           angleX = Math.getRandomInt(-90, 90),
-          angleY = Math.getRandomInt(-90, 90);
+          angleY = Math.getRandomInt(-90, 90),
 
-      console.log('Generating by clicking');
+          newAsteroid = {
+            'x': x,
+            'y': y,
+            'angle': {
+              'x': angleX,
+              'y': angleY
+            },
+            'mass': 10,
+            'size': size,
+            'velocity': Math.getRandomInt(10, 500),
+            'color': '#'+Math.floor(Math.random()*16777215).toString(16)
+          };
 
-      generateAsteroid({
-        'x': x,
-        'y': y,
-        'angle': {
-          'x': angleX,
-          'y': angleY
-        },
-        'mass': 10,
-        'size': size,
-        'color': '#'+Math.floor(Math.random()*16777215).toString(16)
-      });
+      console.log('Creating asteroid...');
+
+      newAsteroid = generateAsteroid(newAsteroid);
+
+      updateControlUI(newAsteroid);
 
     });
 
   });
+
+  function getById (id) {
+    return document.getElementById(id);
+  }
+
+  function updateControlUI (asteroid) {
+
+    var x        = getById('x'),
+        y        = getById('y'),
+        angle    = getById('angle'),
+        size     = getById('size'),
+        velocity = getById('velocity'),
+        mass     = getById('mass');
+
+    x.value        = asteroid.x;
+    y.value        = asteroid.y;
+    angle.value    = asteroid.angle.x + ', ' + asteroid.angle.y;
+    size.value     = asteroid.size;
+    velocity.value = asteroid.velocity;
+    mass.value     = asteroid.mass;
+
+  }
+
+  function shouldGenerateAsteroidFromClick (potentialAsteroid) {
+
+  }
+
+  function getAsteroidFromClick (e) {
+
+    var clickObj = {
+          'x': e.clientX,
+          'y': e.clientY,
+          'size': 1
+        };
+
+    for (var i = 0; i < models.length; i++) {
+
+      if (isColliding(models[i], clickObj)) {
+        return models[i];
+      }
+
+    }
+
+  }
 
   function drawBackground () {
 
@@ -193,23 +250,30 @@ window.addEventListener('DOMContentLoaded', function () {
 
   function isColliding (asteroidOne, asteroidTwo) {
     // create variables to define boundaries of asteroids
-    var oneLeft = asteroidOne.x - asteroidOne.size / 2,
-    oneRight = oneLeft + asteroidOne.size,
-    oneTop = asteroidOne.y - asteroidOne.size / 2,
-    oneBottom = oneTop + asteroidOne.size,
-    twoLeft = asteroidTwo.x - asteroidTwo.size / 2,
-    twoRight = twoLeft + asteroidTwo.size,
-    twoTop = asteroidTwo.y - asteroidTwo.size / 2,
-    twoBottom = twoTop + asteroidTwo.size;
+    var oneLeft   = asteroidOne.x - asteroidOne.size / 2,
+        oneRight  = oneLeft + asteroidOne.size,
+        oneTop    = asteroidOne.y - asteroidOne.size / 2,
+        oneBottom = oneTop + asteroidOne.size,
+        twoLeft   = asteroidTwo.x - asteroidTwo.size / 2,
+        twoRight  = twoLeft + asteroidTwo.size,
+        twoTop    = asteroidTwo.y - asteroidTwo.size / 2,
+        twoBottom = twoTop + asteroidTwo.size;
     // detect if any boundary from both asteroids overlap/intersect
-    if (((oneLeft >= twoLeft &&
-      oneLeft <= twoRight) ||
-      (oneRight >= twoLeft &&
-      oneRight <= twoRight)) &&
-      ((oneTop >= twoTop &&
-      oneTop <= twoBottom) ||
-      (oneBottom >= twoTop &&
-      oneBottom <= twoBottom))
+
+    if (
+        (
+          (oneLeft >= twoLeft && oneLeft <= twoRight)   ||
+          (oneRight >= twoLeft && oneRight <= twoRight) ||
+          (twoLeft >= oneLeft && twoLeft <= oneRight)
+        )
+
+        &&
+
+        (
+          (oneTop >= twoTop && oneTop <= twoBottom)       ||
+          (oneBottom >= twoTop && oneBottom <= twoBottom) ||
+          (twoTop >= oneTop && twoTop <= oneBottom)
+        )
       ) {
       return true;
     };
