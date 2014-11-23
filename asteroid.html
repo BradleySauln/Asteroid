@@ -228,6 +228,7 @@ stop and start buttons, lines showing their path ot trajectory. -->
 			return true;
 		};
 	}
+	
 
 	function start () {
 
@@ -249,12 +250,15 @@ stop and start buttons, lines showing their path ot trajectory. -->
 
 	function updateModels () {
 		var currentAsteroid;
-		if(isColliding(models.asteroidOne, models.asteroidTwo)) {
-			models.asteroidOne.angle.mult(-1);
-			models.asteroidTwo.angle.mult(-1);
-			console.log('collision detected!!')
+		for(i=0; i<models.length; i++){
+			for(j=i+1;j<models.length;j++){
+				if(isColliding(models[i], models[j]) && model[i].isAsteroid && model[j].isAsteroid) {
+					models[i].angle.mult(-1);
+					models[j].angle.mult(-1);
+					console.log('collision detected!!')
+				}
+			}
 		}
-
 		for (var model in models) {
 
 			if (models.hasOwnProperty(model)) {
