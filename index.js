@@ -87,9 +87,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
     inputs.push(function () {
 
-      var x = event.clientX,
-          y = event.clientY,
-          size = Math.getRandomInt(10, 75),
+      var x      = event.clientX,
+          y      = event.clientY,
+          size   = Math.getRandomInt(10, 75),
           angleX = Math.getRandomInt(-90, 90),
           angleY = Math.getRandomInt(-90, 90);
 
@@ -135,13 +135,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
   function isColliding (asteroidOne, asteroidTwo) {
     // create variables to define boundaries of asteroids
-    var oneLeft = asteroidOne.x,
+    var oneLeft = asteroidOne.x - asteroidOne.size / 2,
     oneRight = oneLeft + asteroidOne.size,
-    oneTop = asteroidOne.y,
+    oneTop = asteroidOne.y - asteroidOne.size / 2,
     oneBottom = oneTop + asteroidOne.size,
-    twoLeft = asteroidTwo.x,
+    twoLeft = asteroidTwo.x - asteroidTwo.size / 2,
     twoRight = twoLeft + asteroidTwo.size,
-    twoTop = asteroidTwo.y,
+    twoTop = asteroidTwo.y - asteroidTwo.size / 2,
     twoBottom = twoTop + asteroidTwo.size;
     // detect if any boundary from both asteroids overlap/intersect
     if (((oneLeft >= twoLeft &&
@@ -239,12 +239,6 @@ window.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-
-
-start();
-
-$(function() {
-  // $( "#control" ).accordion();
-});
+  start();
 
 });
