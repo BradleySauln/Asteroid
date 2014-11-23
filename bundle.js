@@ -105,7 +105,35 @@ window.addEventListener('DOMContentLoaded', function () {
 
   }
 
-  generateAsteroid();
+  generateAsteroid({
+          'x': 400,
+          'y': 400,
+          'mass': 10,
+          'width':50,
+          'height':50,
+          'angle': {
+            'x': -90,
+            'y': -90
+          },
+          'velocity': 100,
+          'color': '#33b'
+        });
+
+  generateAsteroid({
+          'x': 100,
+          'y': 100,
+          'mass': 10,
+          'width':50,
+          'height':50,
+          'angle': {
+            'x': 90,
+            'y': 90
+          },
+
+          'velocity': 100,
+          'color': '#fff'
+        })
+
 
   // Set up our canvas
 	canvas.width = window.innerWidth;
@@ -193,7 +221,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     for(var i=0; i<models.length; i++){
       for(var j=i+1;j<models.length;j++){
-        if(isColliding(models[i], models[j]) && model[i].isAsteroid && model[j].isAsteroid) {
+        if(isColliding(models[i], models[j]) && models[i].isAsteroid && models[j].isAsteroid) {
           models[i].angle.mult(-1);
           models[j].angle.mult(-1);
           console.log('collision detected!!')
